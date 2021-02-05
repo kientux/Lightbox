@@ -1,8 +1,8 @@
 import UIKit
 
 public protocol FooterViewDelegate: class {
-
-  func footerView(_ footerView: FooterView, didExpand expanded: Bool)
+    
+    func footerView(_ footerView: FooterView, didExpand expanded: Bool)
 }
 
 open class FooterView: UIView {
@@ -17,6 +17,33 @@ open class FooterView: UIView {
 
     return label
   }()
+    
+    open fileprivate(set) lazy var imageButton: UIButton = { [unowned self] in
+        let title = NSAttributedString(
+            string: LightboxConfig.ImageButton.text,
+            attributes: LightboxConfig.ImageButton.textAttributes)
+        
+        let button = UIButton(type: .system)
+        
+        button.setAttributedTitle(title, for: UIControl.State())
+        
+        if let size = LightboxConfig.ImageButton.size {
+            button.frame.size = size
+        } else {
+            button.sizeToFit()
+        }
+        
+        button.backgroundColor = LightboxConfig.ImageButton.backgroundColor
+        button.layer.cornerRadius = LightboxConfig.ImageButton.cornerRadius
+        
+        if let image = LightboxConfig.ImageButton.image {
+            button.setBackgroundImage(image, for: UIControl.State())
+        }
+        
+        button.isHidden = !LightboxConfig.ImageButton.enabled
+        
+        return button
+    }()
 
   open fileprivate(set) lazy var pageLabel: UILabel = { [unowned self] in
     let label = UILabel(frame: CGRect.zero)
@@ -45,7 +72,7 @@ open class FooterView: UIView {
     backgroundColor = UIColor.clear
     _ = addGradientLayer(gradientColors)
 
-    [pageLabel, infoLabel, separatorView].forEach { addSubview($0) }
+    [pageLabel, infoLabel, separatorView, imageButton].forEach { addSubview($0) }
   }
 
   public required init?(coder aDecoder: NSCoder) {
@@ -113,6 +140,12 @@ extension FooterView: LayoutConfigurable {
   @objc public func configureLayout() {
     infoLabel.frame = CGRect(x: 17, y: 0, width: frame.width - 17 * 2, height: 35)
     infoLabel.configureLayout()
+    
+    let widthImageButton = imageButton.frame.width + 20
+    imageButton.frame = CGRect(x: bounds.width/2 - widthImageButton/2,
+                               y: infoLabel.frame.minY - 45.5,
+                               width: widthImageButton,
+                               height: 37.5)
   }
 }
 
