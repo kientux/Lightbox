@@ -2,30 +2,32 @@ import UIKit
 import Lightbox
 
 class ViewController: UIViewController {
-  
-  lazy var showButton: UIButton = { [unowned self] in
-    let button = UIButton()
-    button.addTarget(self, action: #selector(showLightbox), for: .touchUpInside)
-    button.setTitle("Show me the lightbox", for: UIControl.State())
-    button.setTitleColor(UIColor(red:0.47, green:0.6, blue:0.13, alpha:1), for: UIControl.State())
-    button.titleLabel?.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 30)
-    button.frame = UIScreen.main.bounds
-    button.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
     
-    return button
-  }()
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    view.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
-    view.backgroundColor = UIColor.white
-    view.addSubview(showButton)
-    title = "Lightbox"
-  }
-  
-  // MARK: - Action methods
-  
+    lazy var showButton: UIButton = { [unowned self] in
+        let button = UIButton()
+        button.addTarget(self, action: #selector(showLightbox), for: .touchUpInside)
+        button.setTitle("Show me the lightbox", for: UIControl.State())
+        button.setTitleColor(UIColor(red:0.47, green:0.6, blue:0.13, alpha:1), for: UIControl.State())
+        button.titleLabel?.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 30)
+        button.frame = UIScreen.main.bounds
+        button.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
+        
+        return button
+    }()
+    
+    private var lightBox: LightboxController?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
+        view.backgroundColor = UIColor.white
+        view.addSubview(showButton)
+        title = "Lightbox"
+    }
+    
+    // MARK: - Action methods
+    
     @objc func showLightbox() {
         let images = [
             LightboxImage(
@@ -59,7 +61,26 @@ class ViewController: UIViewController {
         
         controller.dynamicBackground = true
         
+        let deleteButton = UIButton(type: .system)
+        deleteButton.setTitle("Delete", for: .normal)
+        deleteButton.setTitleColor(.red, for: .normal)
+        deleteButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        deleteButton.addTarget(self, action: #selector(didTapDelete), for: .touchUpInside)
+        controller.headerView.addActionView(deleteButton)
+        
+        let saveButton = UIButton(type: .system)
+        saveButton.setTitle("Save", for: .normal)
+        saveButton.setTitleColor(.green, for: .normal)
+        saveButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        controller.headerView.addActionView(saveButton)
+        
         present(controller, animated: true, completion: nil)
+        
+        self.lightBox = controller
+    }
+    
+    @objc private func didTapDelete() {
+        lightBox?.removeCurrentImage()
     }
 }
 

@@ -1,4 +1,4 @@
-protocol LayoutConfigurable: class {
-
-  func configureLayout()
+protocol LayoutConfigurable: AnyObject {
+    
+    func configureLayout()
 }

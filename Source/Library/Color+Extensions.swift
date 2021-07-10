@@ -9,9 +9,9 @@ internal extension UIColor {
             ? String(string.dropFirst())
             : string
         guard hex.count == 3 || hex.count == 6
-            else {
-                self.init(white: 1.0, alpha: 0.0)
-                return
+        else {
+            self.init(white: 1.0, alpha: 0.0)
+            return
         }
         if hex.count == 3 {
             for (index, char) in hex.enumerated() {
